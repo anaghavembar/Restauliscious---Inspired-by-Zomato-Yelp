@@ -1,0 +1,57 @@
+CREATE TABLE restaurants(
+RestId int NOT NULL AUTO_INCREMENT,
+Name varchar(50),
+Area varchar(50),
+City varchar(50),
+PendingOrders int,
+PRIMARY KEY(RestId)
+
+);
+
+CREATE TABLE restaurantType(
+RestId int NOT NULL,
+Type varchar(50),
+FOREIGN KEY(RestId) REFERENCES restaurants(RestId)
+);
+
+CREATE TABLE foodItems(
+FoodId int NOT NULL AUTO_INCREMENT,
+FoodItem varchar(50),
+PRIMARY KEY(FoodId)
+);
+
+CREATE TABLE menu(
+RestId int NOT NULL,
+FoodId int NOT NULL,
+FOREIGN KEY(RestId) REFERENCES restaurants(RestId),
+FOREIGN KEY(FoodId) REFERENCES foodItems(FoodId)
+);
+
+
+CREATE TABLE orderInfo(
+OrderId int NOT NULL AUTO_INCREMENT,
+RestId int NOT NULL,
+PRIMARY KEY(OrderId),
+FOREIGN KEY(RestId) REFERENCES restaurants(RestId)
+);
+
+CREATE TABLE orderItems(
+OrderId int NOT NULL AUTO_INCREMENT,
+FoodId int NOT NULL,
+Quantity int NOT NULL,
+FOREIGN KEY(OrderId) REFERENCES orderInfo(OrderId) on delete cascade,
+FOREIGN KEY(FoodId) REFERENCES foodItems(FoodId)
+);
+
+CREATE TABLE orderHistory(
+OrderId int NOT NULL,
+RestId int Not NULL
+);
+
+CREATE TRIGGER insHist AFTER INSERT ON orderInfo
+FOR EACH ROW
+BEGIN
+INSERT INTO orderHistory
+VALUES
+(NEW.OrderId, NEW.RestId);
+END;
